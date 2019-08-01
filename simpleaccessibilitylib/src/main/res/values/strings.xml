@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">simpleAccessibilityLib</string>
+    <string name="my_accessibility_description">非常建议您开启无障碍服务，开启后可以协助您完成一些简单的操作，提升您的操作体验。</string>
+</resources>
