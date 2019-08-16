@@ -8,6 +8,7 @@ import com.zy.accessibilitylib.task.TaskManager
  */
 abstract class BaseTask {
 
+    var id = 0L
     var actions = mutableListOf<BaseAction>()
     var isRunnng: Boolean = false
     var step = 0
@@ -22,17 +23,19 @@ abstract class BaseTask {
 
     open fun nextStep() {
         step++
+        if (step >= actions.size) {
+            endTask(true)
+            return
+        }
         if (actions[step] is OpenActivityAction) {
             actions[step].execute()
             nextStep()
         } else if (actions[step] is AccessibilityAction) {
             if ((actions[step] as AccessibilityAction).keepupFront) {
-                if (actions[step].execute()) {
-                    actions[step].onPostExecute()
-                }
+                (actions[step] as AccessibilityAction).onPageOpen()
             }
         } else if (actions[step] is EndAction) {
-            endTask()
+            endTask(true)
         }
     }
 
@@ -46,7 +49,7 @@ abstract class BaseTask {
         }
     }
 
-    open fun endTask() {
+    open fun endTask(success: Boolean) {
         isRunnng = false
         TaskManager.endTask(this)
     }

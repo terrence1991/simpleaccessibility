@@ -2,7 +2,11 @@ package com.zy.accessibilitylib.util
 
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
+import android.text.TextUtils
 import android.view.accessibility.AccessibilityNodeInfo
 import java.util.concurrent.atomic.AtomicReference
 
@@ -67,6 +71,24 @@ object AssistUtil {
     }
 
     /**
+     * Gets node info by full text.
+     *
+     * @param name the name
+     * @return the node info by text
+     */
+    fun getNodeInfoByFullText(name: String): AccessibilityNodeInfo? {
+        val rootNode = getRootNode()
+                ?: return null
+        val nodeInfos = rootNode.findAccessibilityNodeInfosByText(name)
+        for (node in nodeInfos) {
+            if (TextUtils.equals(name, node.text)) {
+                return node
+            }
+        }
+        return null
+    }
+
+    /**
      * Gets first node info by class.
      *
      * @param className the class name
@@ -76,6 +98,7 @@ object AssistUtil {
         val rootNode = getRootNode()
             ?: return null
         for (i in 0 until rootNode.childCount) {
+            if (rootNode.getChild(i) == null) continue
             if (rootNode.getChild(i).className == className) {
                 return rootNode.getChild(i)
             }
@@ -87,9 +110,11 @@ object AssistUtil {
         return null
     }
 
-    fun getNodeInfoByClass(rootNode: AccessibilityNodeInfo, className: String): List<AccessibilityNodeInfo> {
+    fun getNodeInfoByClass(rootNode: AccessibilityNodeInfo?, className: String): List<AccessibilityNodeInfo> {
+        if (rootNode == null) return mutableListOf<AccessibilityNodeInfo>()
         val nodes = mutableListOf<AccessibilityNodeInfo>()
         for (i in 0 until rootNode.childCount) {
+            if (rootNode.getChild(i) == null) continue
             if (rootNode.getChild(i).className == className) {
                 nodes.add(rootNode.getChild(i))
             }
@@ -121,5 +146,11 @@ object AssistUtil {
     fun performReturnBack(): Boolean {
 //        LogUtils.d("performReturnBack: ")
         return assistService != null && assistService!!.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+    }
+
+    fun startSettingService(context: Context) {
+        val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
     }
 }

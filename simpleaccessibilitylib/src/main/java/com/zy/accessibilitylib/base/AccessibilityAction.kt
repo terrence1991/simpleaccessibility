@@ -115,7 +115,7 @@ class AccessibilityAction(parentTask: BaseTask): BaseAction(parentTask) {
                         checkPage()
                     }
         } else {
-            parentTask.endTask()
+            parentTask.endTask(false)
             //执行失败
         }
     }
@@ -167,7 +167,7 @@ class AccessibilityAction(parentTask: BaseTask): BaseAction(parentTask) {
                     }
                 }
         } else {
-            parentTask.endTask()
+            parentTask.endTask(false)
             //执行失败
         }
         return false
@@ -189,6 +189,9 @@ class AccessibilityAction(parentTask: BaseTask): BaseAction(parentTask) {
                 }
                 SearchAction.SEARCH_WITH_FIRST_CLASS -> {
                     node = AssistUtil.getFirstNodeInfoByClass(searchAction!!.keyword)
+                }
+                SearchAction.SEARCH_WITH_FULL_TEXT -> {
+                    node = AssistUtil.getNodeInfoByFullText(searchAction!!.keyword)
                 }
             }
             if (node != null && !TextUtils.isEmpty(searchAction!!.direction)) {
@@ -261,6 +264,7 @@ class AccessibilityAction(parentTask: BaseTask): BaseAction(parentTask) {
             const val SEARCH_WITH_FIRST_ID = 1
             const val SEARCH_WITH_FIRST_TEXT = 2
             const val SEARCH_WITH_FIRST_CLASS = 3
+            const val SEARCH_WITH_FULL_TEXT = 4
         }
 
         var type = 0

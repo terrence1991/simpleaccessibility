@@ -1,5 +1,6 @@
 package com.zy.accessibilitydemo
 
+import android.content.ComponentName
 import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -14,8 +15,10 @@ import android.view.Menu
 import com.sodao.jktapp.task.AddFriendTask
 import com.sodao.jktapp.task.PostSnsTask
 import android.content.Intent
+import android.net.Uri
 import android.os.Parcelable
 import android.util.Log
+import com.miui.enterprise.sdk.ApplicationManager
 import kotlin.experimental.xor
 
 
@@ -33,7 +36,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()
 //                AddFriendTask()
-            PostSnsTask()
+//            PostSnsTask()
+//            ApplicationManager.getInstance().enableAccessibilityService(ComponentName("com.zy.accessibilitydemo", "com.zy.accessibilitylib.service.AutoScriptService"), true)
+            val intent = Intent()
+            intent.data = Uri.parse("weixin://openSpecificView/myprofile")
+            startActivity(intent)
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
